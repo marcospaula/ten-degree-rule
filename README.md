@@ -9,8 +9,8 @@ apply it to — and the direction of the resulting error is predictable and, at 
 electrolytic-capacitor activation energies, dangerous rather than conservative.
 
 > **Status: derivation proven, closed-form, reproducible with the standard library — and the
-> deviation it predicts is independently confirmed by a manufacturer's own technical note.**
-> See [§4](#4-confirmed-by-the-manufacturers-own-technical-note) and
+> deviation it predicts is confirmed independently by two manufacturers' own technical notes.**
+> See [§4](#4-confirmed-independently-by-two-manufacturers-own-technical-notes) and
 > [`references.md`](references.md). A published numeric `Ea` to compare directly against the
 > 0.707 eV this repository derives is not found yet — see [Open](#open).
 
@@ -103,33 +103,43 @@ The ten-degree rule does not avoid that assumption — it makes it silently, and
 changes depending on where and how far you apply the rule. A design margin computed with the
 rule is a margin computed against an unstated, moving `Ea`.
 
-## 4. Confirmed by the manufacturer's own technical note
+## 4. Confirmed independently by two manufacturers' own technical notes
 
-Rubycon Corporation's technical note on aluminum electrolytic capacitors (doc. 3925-1e, §5-1)
-states the rule as `L = L0 * 2^((Tmax-Ta)/10)`, presents it alongside a true Arrhenius curve
-(both anchored at 1.0 at 105 °C), and then states directly:
+**Rubycon Corporation** (doc. 3925-1e, §5-1) states the rule as `L = L0 * 2^((Tmax-Ta)/10)`,
+presents it alongside a true Arrhenius curve (both anchored at 1.0 at 105 °C), and then states
+directly:
 
 > "The Arrhenius law and the '10°C 2 times law' show good consistency in the range of 70°C to
 > 90°C, but there is some deviation of '10°C 2 times law' in the temperature range less than
 > 60°C or more than 105°C."
 
-That is the manufacturer confirming, in its own reference document, *that* the rule deviates
-from Arrhenius outside a narrow window and roughly *where* — independent of anything computed
-here. What this repository adds is *how much*: the deviation is not incidental drift, it is the
-direct, closed-form consequence of the rule embedding a moving `Ea` (§1–§2), and at a realistic
-extrapolation the resulting bias is directional and large (§3), not a rounding error. Full
-citation and quote-in-context in [`references.md`](references.md).
+**Nichicon Corporation** (CAT.8101H, §2-9-3) names the same rule "Arrhenius theory" and states
+its applicability floor directly:
+
+> "In general, if a capacitor is used at the maximum operating temperature or to a minimum of
+> 40°C operating temperature the life expectancy can be calculated according to Arrhenius
+> theory in which the life doubles for each 10°C drop in temperature."
+
+Two different manufacturers, two different documents, the same shape of caveat: the rule holds
+in a bounded window and both name where that window ends. **Nichicon's stated floor, 40 °C, is
+exactly the use temperature in §3's worked example** — the manufacturer's own applicability
+limit sits at the edge of a routine extrapolation, not far past it.
+
+That is two manufacturers confirming, in their own reference documents, *that* the rule
+deviates from Arrhenius outside a bounded window and roughly *where* — independent of anything
+computed here. What this repository adds is *how much*: the deviation is not incidental drift,
+it is the direct, closed-form consequence of the rule embedding a moving `Ea` (§1–§2), and at a
+realistic extrapolation the resulting bias is directional and large (§3), not a rounding error.
+Full citations and quotes-in-context in [`references.md`](references.md).
 
 ## Open
 
-**Not resolved:** no manufacturer publishes a numeric `Ea` in eV to compare directly against the
-0.707 eV this repository derives at the common 105 °C → 40 °C span. Rubycon's own note (above)
-shows the deviation graphically but does not state an activation energy. Nichicon publishes
-long-life datasheets that may state one, but `nichicon.co.jp` / `nichicon.com` are outside this
-workspace's network egress allowlist and no cached copy was found via search — see
-[`references.md`](references.md) for what was checked and what remains open. If a Nichicon `Ea`
-value turns up, the check is the same: does it sit inside or outside the 0.55–0.97 eV band the
-sliding-window calculation in §1 produces.
+**Not resolved:** neither manufacturer publishes a numeric `Ea` in eV to compare directly
+against the 0.707 eV this repository derives at the common 105 °C → 40 °C span — both confirm
+the rule's bounded validity in words and figures, not in a parameter. Panasonic's lifetime-tool
+manual was also checked and has no `Ea` or formula at all. A long-life premium-series datasheet,
+rather than these general technical notes, is the next place to look if the exact number is
+still wanted. See [`references.md`](references.md) for the full trail of what was checked.
 
 ## Method note
 

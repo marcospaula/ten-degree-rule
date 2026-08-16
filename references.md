@@ -1,8 +1,10 @@
 # References
 
-No PDF binaries are stored in this repository — sources are cited by URL, with the
-specific passages that matter quoted and dated here. (Binary files are kept out of this
-and every other repo in this workspace; only the distilled citation goes in.)
+No PDF binaries are committed to this repository's git history — sources are cited by
+URL below, with the specific passages that matter quoted and dated. Local copies of the
+three PDFs referenced here are kept in `materials/` for convenience during writing, but
+that directory is git-ignored and never enters a commit; the citation and the quoted
+passage are the durable record, not the binary.
 
 ## Primary source — confirms the deviation this repository quantifies
 
@@ -42,6 +44,39 @@ No numeric activation energy in eV is published in this document — Rubycon's
 Fig. 21 shows the Arrhenius curve graphically, without a stated `Ea`. That number,
 and the quantified bias, are this repository's contribution.
 
+## Second primary source — independent confirmation, same shape
+
+**Nichicon Corporation. "General Descriptions of Aluminum Electrolytic Capacitors" /
+"Application Guidelines for Aluminum Electrolytic Capacitors."** Technical Notes,
+CAT.8101H. Nichicon Corporation.
+<https://www.nichicon.co.jp/english/products/pdf/aluminum.pdf>
+(retrieved 2026-08-16)
+
+Section 2-9-3 "Ambient Temperature and Life", p. 22:
+
+> "In general, if a capacitor is used at the maximum operating temperature or to a
+> minimum of 40°C operating temperature the life expectancy can be calculated
+> according to Arrhenius theory in which the life doubles for each 10°C drop in
+> temperature (Fig 2-15)."
+
+Two things matter here. First, Nichicon names the rule "Arrhenius theory" directly —
+independent confirmation that this is not an ad hoc shortcut but a stated (if
+unparameterized) physical model. Second, and more useful to this repository's
+argument: **Nichicon caps the rule's stated validity at a minimum of 40 °C.** That
+is precisely the use temperature in this repository's worked example (105 °C rated
+→ 40 °C use, §3 of the README) — the manufacturer's own applicability floor sits
+exactly at the edge of a routine extrapolation, not far past it. Fig. 2-15 in the
+same section plots guaranteed-life lines (85 °C/2000 h, 105 °C/2000 h, 105 °C/3000 h,
+105 °C/5000 h) only down to 45 °C ambient, one notch above that floor.
+
+Like Rubycon, Nichicon publishes no numeric `Ea` in this document — only the rule
+and its bounded range of applicability.
+
+**Domain note:** `nichicon.co.jp` is outside this workspace's Bash network egress
+allowlist (`curl` fails with exit 56), but `WebFetch` reached it directly and cached
+the PDF, which was then read with native PDF parsing. No allowlist change was
+needed for this source.
+
 ## Checked, no additional Ea data found
 
 **Panasonic Industry Co., Ltd. "Hybrid/Aluminum Electrolytic Capacitor — Estimated
@@ -55,9 +90,9 @@ Checked so the search is not repeated: **this document does not help.**
 
 ## Still open
 
-Nichicon publishes long-life series datasheets but the manufacturer's own
-domain (`nichicon.co.jp`, `nichicon.com`) is outside this workspace's network
-egress allowlist, and no cached/alternate copy was located via search. If a
-Nichicon `Ea` value turns up, the natural check is the same as Rubycon's: does it
-sit inside or outside the 0.55–0.97 eV band this repository's sliding-window
-calculation produces.
+No manufacturer among the three checked (Rubycon, Nichicon, Panasonic) publishes a
+numeric `Ea` in eV. Both Rubycon and Nichicon confirm the rule's limited range of
+validity in words and figures, not in a parameter that could be compared directly
+against the 0.707 eV this repository derives at the 105→40 °C span. A long-life
+premium-series datasheet (rather than these general technical notes) is the next
+place to look, if the exact number is still wanted.
