@@ -105,10 +105,16 @@ electrolyte evaporation and related wear-out mechanisms:
 | 1.00 | 452,548 | 2,919,626 | 0.16× | conservative |
 
 **The rule only matches reality at exactly the `Ea` it happens to embed for that span (0.707 eV
-here). Below that, it overstates life — in the worst case shown, by nearly 4×.** Electrolyte
-evaporation and related low-barrier wear-out mechanisms are commonly cited in the 0.4–0.7 eV
-range, which puts a real design on the optimistic side of this table more often than the rule's
-universal-shortcut reputation suggests.
+here). Below that, it overstates life — in the worst case shown, by nearly 4×.**
+
+> ⚠️ **Unverified claim, flagged rather than silently fixed.** An earlier version of this
+> section asserted that "electrolyte evaporation is commonly cited in the 0.4–0.7 eV range"
+> without a source — that was wrong practice, not a minor omission. A candidate primary
+> source has since been found (Torki, Joubert & Sari, 2023, *Journal of Energy Storage*,
+> DOI 10.1016/j.est.2022.106330), which a search summary attributes ~0.4 eV to electrolyte
+> evaporation in aluminum electrolytic capacitors — but the full text is paywalled and has
+> **not** been read directly. Until it is, treat 0.4–0.6 eV as a plausible illustrative range
+> for this table, not a cited fact. See [`references.md`](references.md) for the full trail.
 
 ## Why this matters
 

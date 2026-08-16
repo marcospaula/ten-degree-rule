@@ -96,3 +96,29 @@ validity in words and figures, not in a parameter that could be compared directl
 against the 0.707 eV this repository derives at the 105→40 °C span. A long-life
 premium-series datasheet (rather than these general technical notes) is the next
 place to look, if the exact number is still wanted.
+
+## Flagged: the "0.4–0.7 eV for electrolyte evaporation" claim is not independently verified
+
+An earlier version of this repository's README (§3) stated that "electrolyte evaporation
+and related low-barrier wear-out mechanisms are commonly cited in the 0.4–0.7 eV range"
+with no citation. That was an unsourced assertion, caught on audit — recorded here rather
+than quietly corrected, per this project's own standard (see the git history for the fix).
+
+**Candidate source, not yet confirmed by direct reading:**
+
+**Torki, J.; Joubert, C.; Sari, A. (2023). "Electrolytic capacitor: Properties and
+operation." *Journal of Energy Storage*, 58, 106330.**
+DOI: [10.1016/j.est.2022.106330](https://doi.org/10.1016/j.est.2022.106330)
+(peer-reviewed review article, Université Claude Bernard Lyon 1)
+
+A search-engine summary of this paper states: *"the activation energy for electrolyte
+evaporation is of the order of 0.4 eV for aluminum electrolytic capacitors (AEC) and
+1.2 eV for tantalum capacitors"*, and separately attributes ~0.94 eV to anodic alumina
+degradation (a different aging mechanism in the same component).
+
+**Why this is flagged instead of cited normally:** both ScienceDirect and ResearchGate
+returned HTTP 403 (paywalled) when fetched directly (2026-08-16). The 0.4 eV figure above
+comes from a search engine's summary of the paper, not from reading the primary text.
+That is not the same standard of evidence as the Rubycon and Nichicon citations above,
+which were read page-by-page. Do not upgrade this to a cited fact until the full text is
+read directly and the exact passage is quoted in context.
