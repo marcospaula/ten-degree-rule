@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # Manufacturer PDFs kept locally for reference only -- never committed.
 # Citations and quoted passages live in references.md instead.
