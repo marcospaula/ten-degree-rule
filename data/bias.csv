@@ -1,0 +1,7 @@
+ea_real_ev,life_rule_h,life_arrhenius_h,rule_over_arrhenius,verdict
+0.5,452548,120823,3.75,OPTIMISTIC (dangerous)
+0.6,452548,228446,1.98,OPTIMISTIC (dangerous)
+0.707,452548,451632,1.0,coincides
+0.8,452548,816687,0.55,conservative
+0.9,452548,1544157,0.29,conservative
+1.0,452548,2919626,0.16,conservative

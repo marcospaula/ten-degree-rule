@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this analysis or its method, please cite it as below."
+title: "The ten-degree rule is an undeclared Arrhenius model"
+abstract: >-
+  An audit of the electrolytic-capacitor industry's standard life-derating shortcut
+  (life doubles every 10 C the operating temperature drops below rated). Solving the
+  rule for the activation energy it implies shows the rule is itself an Arrhenius
+  model, with an Ea that varies by 77% depending on where on the temperature scale
+  it is applied, and that produces optimistic life predictions -- by nearly 4x in the
+  case examined -- at activation energies plausible for electrolyte-evaporation wear-out.
+  Every number is reproduced from first principles by verify.py, with no proprietary
+  or measured data.
+type: software
+authors:
+  - family-names: "de Paula"
+    given-names: "Marcos"
+repository-code: "https://github.com/marcospaula/ten-degree-rule"
+url: "https://github.com/marcospaula/ten-degree-rule"
+license: MIT
+date-released: 2026-08-16
+keywords:
+  - reliability engineering
+  - accelerated life testing
+  - Arrhenius equation
+  - activation energy
+  - electrolytic capacitors
+  - reproducible analysis
+references:
+  - type: generic
+    title: "Ten-degree rule (2x/10C rule) for electrolytic capacitor life"
+    notes: "Industry-standard shortcut, published in long-life capacitor datasheets (Nichicon, Rubycon, Panasonic)."
