@@ -26,6 +26,16 @@ keywords:
   - electrolytic capacitors
   - reproducible analysis
 references:
+  - type: report
+    title: "Aluminum Electrolytic Capacitor - Technical Notes"
+    authors:
+      - name: "Rubycon Corporation"
+    notes: >-
+      Document 3925-1e, section 5-1. States the ten-degree rule as Eq. 10 and
+      confirms it deviates from a true Arrhenius model outside the 70-90 C
+      window, which is the primary-source validation for this analysis. No
+      numeric Ea is published in this document. See references.md.
+    url: "https://www.rubycon.co.jp/wp-content/uploads/products-aluminum/al-technical-note_en.pdf"
   - type: generic
     title: "Ten-degree rule (2x/10C rule) for electrolytic capacitor life"
     notes: "Industry-standard shortcut, published in long-life capacitor datasheets (Nichicon, Rubycon, Panasonic)."
