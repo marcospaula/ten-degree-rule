@@ -21,11 +21,13 @@ what that silence costs.
 - Over the common 105 °C → 40 °C extrapolation the rule embeds **`Ea` = 0.707 eV**. A NASA
   reliability study independently states the rule "corresponds to an activation energy of
   ~0.68 eV" for liquid aluminum electrolytic capacitors — **within 4% of the derived value**.
-- **The rule is right by coincidence, not by construction.** It happens to sit near the
-  conventional `Ea` for this one component at this one span, but it carries no mechanism
-  information, so it cannot tell you when it stops being right — and
-  [§3](#3-the-cost-of-not-asking-a-sensitivity-table) shows the error is a factor of 3-6× at
-  either edge of the plausible `Ea` range.
+  That 4% gap in `Ea` becomes a **19% gap in predicted hours**, which is the cheapest available
+  proof that `Ea` is not a secondary detail.
+- **The rule is right by coincidence, not by construction.** Measured against the activation
+  energies actually published for this component family (0.57–1.03 eV), the rule ranges from
+  **2.40× optimistic to 0.13× conservative** — the published range does not bracket the rule, it
+  *crosses* it. The rule carries no mechanism information, so it cannot tell you which row you
+  are on.
 - **Three competing manufacturers (Rubycon, Nichicon, Nippon Chemi-Con) independently confirm**
   the rule holds only in a bounded temperature window — see [`references.md`](references.md).
 - Fully reproducible: standard-library-only `verify.py`, 14 automated tests, every citation
@@ -107,16 +109,20 @@ number for each real `Ea`. The gap between them is the cost of the rule not aski
 |---|---|---|---|---|
 | 0.50 | 452,548 | 120,823 | **3.75×** | optimistic |
 | 0.60 | 452,548 | 228,446 | **1.98×** | optimistic |
-| **0.707** | 452,548 | 451,632 | **1.00×** | coincides (by construction) |
+| 0.707 | 452,548 | 451,632 | 1.00× | **tautological, see below** |
 | 0.80 | 452,548 | 816,687 | 0.55× | conservative |
 | 0.90 | 452,548 | 1,544,157 | 0.29× | conservative |
 | 1.00 | 452,548 | 2,919,626 | 0.16× | conservative |
 
-**This table is the deliverable, not any single row of it.** The rule matches reality at exactly
-one point — the `Ea` it happens to embed for that span — and the error grows in both directions
-from there: roughly 4× optimistic at 0.50 eV, roughly 6× conservative at 1.00 eV. Which row
-applies to a given design depends on the real damage mechanism, which the rule never asks about
-and the designer is rarely told.
+> ⚠️ **The 1.00× row is not a validation of anything.** It compares the rule against an Arrhenius
+> model carrying *the rule's own implied `Ea`*. Of course they agree: it is the same equation
+> evaluated twice. Reading that row as "the rule is right" would be circular. The comparison that
+> carries information is against activation energies established independently, which is [§5](#5-checked-against-published-activation-energies).
+
+**This table is the deliverable, not any single row of it.** The error grows in both directions
+away from the tautological point: roughly 4× optimistic at 0.50 eV, roughly 6× conservative at
+1.00 eV. Which row applies to a given design depends on the real damage mechanism, which the rule
+never asks about and the designer is rarely told.
 
 **This repository deliberately does not claim which row is "the real one."** Doing so would
 repeat the rule's own mistake — asserting an activation energy without establishing the
@@ -158,30 +164,59 @@ applicability limit sits at the edge of a routine extrapolation, not far past it
 repository adds is *how much* the deviation costs (§1–§3), which none of the three quantify.
 Full citations and quotes-in-context in [`references.md`](references.md).
 
-## 5. What the published Ea values say
+## 5. Checked against published activation energies
 
-The derivation in §2 says the rule embeds `Ea` = 0.707 eV over the 105 °C → 40 °C span. That
-number can be checked against the literature:
+§3's table sweeps round numbers. This section uses only activation energies taken from a source
+read in full context: Teverovsky, A. (NASA GSFC / Jacobs Technology), **"Stress Testing of Chip
+Aluminum Polymer Capacitors"**, PCNS proceedings. Same span as §3 (105 °C → 40 °C):
 
-**Teverovsky, A. (NASA GSFC / Jacobs Technology), "Stress Testing of Chip Aluminum Polymer
-Capacitors"**, PCNS proceedings, §I:
+| Ea (eV) | rule ÷ real | direction | where the number comes from |
+|---|---|---|---|
+| 0.57 | **2.40×** | optimistic | lower bound, measured ESR failures (that study) |
+| 0.62 | 1.74× | optimistic | polymer tantalum, average cited in that study |
+| 0.68 | **1.19×** | optimistic | the rule's own equivalence, as stated by NASA |
+| 0.73 | 0.87× | conservative | aluminum polymer, average **measured** in that study |
+| 0.94 | 0.23× | conservative | CDE's published `Ea` in their APC life equation |
+| 1.03 | 0.13× | conservative | upper bound, measured ESR failures (that study) |
+
+**Across published values the rule ranges from 2.40× optimistic to 0.13× conservative — and it
+carries no information that would tell you which row you are on.** Note that the published range
+does not bracket the rule; it *crosses* it, changing sign in the middle. That is the practical
+finding: the error is not a bounded uncertainty, it is a sign-changing one.
+
+### The rule's stated equivalence, and what it costs
+
+The NASA text states the equivalence directly:
 
 > "The expected lifetime of liquid aluminum electrolytic capacitors is assumed to double when
 > temperature is reduced by 10 °C, L ~ 2^(ΔT/10), **which corresponds to an activation energy of
 > ~0.68 eV.**"
 
-That is an independent statement of the same equivalence this repository derives, for exactly
-this component class — **0.68 eV published against 0.707 eV derived, a 4% difference.** The same
-study's own accelerated-life measurements on aluminum polymer capacitors (a neighbouring
-technology) found `Ea` = 0.73 ± 0.16 eV for both capacitance and ESR degradation, again
-bracketing the derived value.
+Read the scope carefully: this is NASA performing *the same conversion this repository performs*,
+anchored at a different point on the curve. It is independent corroboration of the **method**
+(someone else converted the rule to an `Ea` and landed nearby), not an independent measurement of
+the underlying mechanism.
 
-**The honest conclusion this forces:** for liquid aluminum electrolytic capacitors, over this
-particular span, the rule's hidden `Ea` lands close to the conventionally accepted one. The rule
-is not wrong here — **it is right by coincidence**. It carries no mechanism information, so it
-has no way to signal when the coincidence ends: at a different span (§2), a different window
-(§1), a different component class, or a different dominant damage mechanism, the same rule
-produces the errors in §3 with exactly the same confidence.
+And the small gap between the two is itself the cheapest available demonstration of why `Ea`
+matters:
+
+```
+derived  0.707 eV      published  0.68 eV
+disagreement in Ea ................  4.0%
+disagreement in predicted hours ... 19.0%
+```
+
+**Two sources that essentially agree still differ by a fifth of the answer**, because `Ea` sits in
+an exponent. Anyone who treats the activation energy as a secondary detail is discarding 19% of
+the result on a rounding difference.
+
+**The honest conclusion.** For liquid aluminum electrolytic capacitors over this span, the rule's
+hidden `Ea` lands in the right neighbourhood — near the conventionally quoted ~0.68 eV, and inside
+the 0.57–1.03 eV band actually measured for related parts. The rule works here. But it works
+without carrying any mechanism information, so it cannot signal when it stops working: at a
+different span (§2), a different window (§1), or a different component whose dominant mechanism
+sits elsewhere in that band, the same rule produces the errors above with exactly the same
+confidence.
 
 > A rule that is right for reasons it cannot state is a rule you cannot audit. That is the
 > finding — not that the number is wrong.

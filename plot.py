@@ -43,17 +43,30 @@ def main() -> None:
     ax2.fill_between(eas2, ratios, 1.0, where=[r <= 1.0 for r in ratios],
                       color="#2980b9", alpha=0.12, label="rule conservative")
 
-    # NASA/Teverovsky states the rule corresponds to ~0.68 eV for this component
-    # class -- 4% from the 0.707 derived here. Band shows the two together.
-    ax2.axvspan(0.68, 0.707, color="#27ae60", alpha=0.18, zorder=0)
-    ax2.scatter([0.707], [1.0], color="#2c3e50", zorder=5)
-    ax2.annotate("derived 0.707 eV\npublished ~0.68 eV (NASA)", xy=(0.70, 1.0),
-                 xytext=(0.76, 2.6), fontsize=9, color="#1e6f3d",
-                 arrowprops=dict(arrowstyle="->", color="#1e6f3d"))
+    # The band of Ea values actually PUBLISHED for this component family
+    # (Teverovsky/NASA: 0.57-1.03 eV measured). It does not bracket the rule --
+    # it crosses it, so the error changes sign inside the published range.
+    ax2.axvspan(0.57, 1.03, color="#8e44ad", alpha=0.07, zorder=0)
+    ax2.annotate("", xy=(0.57, 4.7), xytext=(1.03, 4.7),
+                 arrowprops=dict(arrowstyle="<->", color="#8e44ad", lw=1.3))
+    ax2.text(0.80, 4.78, "published Ea range for this family (0.57–1.03 eV)",
+             ha="center", fontsize=8.5, color="#8e44ad")
+
+    # The two anchor points, kept visually distinct: one is the rule talking to
+    # itself (tautological), the other is an independent statement.
+    ax2.scatter([0.707], [1.0], color="#95a5a6", zorder=5, s=32)
+    ax2.scatter([0.68], [1.19], color="#c0392b", zorder=6, s=48)
+    ax2.annotate("published 0.68 eV\n→ rule 1.19× optimistic",
+                 xy=(0.68, 1.19), xytext=(0.76, 3.35), fontsize=9, color="#c0392b",
+                 arrowprops=dict(arrowstyle="->", color="#c0392b"))
+    ax2.annotate("derived 0.707 eV → 1.00×\n(tautological: rule vs. itself)",
+                 xy=(0.707, 1.0), xytext=(0.76, 2.05), fontsize=8.5, color="#7f8c8d",
+                 arrowprops=dict(arrowstyle="->", color="#95a5a6"))
     ax2.set_xlabel("real activation energy Ea (eV)")
     ax2.set_ylabel("rule ÷ Arrhenius life prediction")
     ax2.set_title("105 °C → 40 °C: error vs. the unstated mechanism")
-    ax2.legend(fontsize=8, loc="upper right")
+    ax2.legend(fontsize=8, loc="upper left", bbox_to_anchor=(0.005, 0.86))
+    ax2.set_ylim(0, 5.2)
 
     fig.suptitle("The ten-degree rule embeds an undeclared, moving Arrhenius Ea\n"
                  "right by coincidence at one point, unbounded elsewhere",

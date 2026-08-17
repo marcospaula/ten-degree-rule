@@ -1,6 +1,9 @@
 import pytest
 
-from verify import check_bias, implied_ea, ten_degree_rule_af, ten_degree_rule_implied_ea
+from verify import (
+    check_bias, check_ea_sensitivity, check_published_ea, implied_ea,
+    ten_degree_rule_af, ten_degree_rule_implied_ea,
+)
 
 
 def test_the_headline_number():
@@ -48,11 +51,13 @@ def test_tabela_de_vies_tem_seis_linhas_uma_por_ea():
     assert len(tabela) == 6
 
 
-def test_no_ea_707_a_regra_e_neutra():
+def test_no_ea_707_o_resultado_e_TAUTOLOGICO_nao_validacao():
+    """1.00x aqui nao valida nada: compara a regra contra Arrhenius carregando
+    o Ea que a propria regra embute. O veredito registra isso no nome."""
     tabela = check_bias()
     linha = next(r for r in tabela if r["ea_real_ev"] == 0.707)
     assert linha["rule_over_arrhenius"] == 1.0
-    assert linha["verdict"] == "coincides"
+    assert linha["verdict"] == "tautological"
 
 
 def test_no_ea_05_a_regra_e_perigosamente_otimista():
@@ -69,3 +74,35 @@ def test_acima_de_707_a_regra_fica_conservadora():
     altos = [r for r in tabela if r["ea_real_ev"] > 0.707]
     assert altos, "esperava pelo menos uma linha com Ea > 0.707"
     assert all(r["verdict"] == "conservative" for r in altos)
+
+
+# ---- os Ea PUBLICADOS (README secao 5) -- a comparacao que nao e circular ----
+
+def test_contra_o_ea_publicado_a_regra_e_19pct_otimista():
+    """Contra o 0.68 eV que a NASA enuncia, a regra NAO coincide: erra 1.19x."""
+    linha = next(r for r in check_published_ea() if r["ea_ev"] == 0.68)
+    assert linha["rule_over_real"] == 1.19
+    assert linha["direction"] == "optimistic"
+
+
+def test_a_faixa_publicada_atravessa_a_neutralidade():
+    """O achado: os Ea publicados nao cercam a regra, eles a atravessam --
+    de 2.4x otimista a 0.13x conservadora, com inversao de sinal no meio."""
+    tabela = check_published_ea()
+    razoes = [r["rule_over_real"] for r in tabela]
+    assert max(razoes) == 2.40
+    assert min(razoes) == 0.13
+    assert any(r > 1 for r in razoes) and any(r < 1 for r in razoes), \
+        "a faixa tem que cruzar 1.0, senao o argumento da direcao cai"
+
+
+def test_toda_linha_publicada_tem_fonte():
+    """Nenhum Ea entra na tabela sem procedencia declarada."""
+    assert all(r["source"].strip() for r in check_published_ea())
+
+
+def test_4pct_em_ea_vira_19pct_em_horas():
+    """A demonstracao mais barata de que Ea nao e detalhe."""
+    s = check_ea_sensitivity()
+    assert s["disagreement_in_ea_pct"] == 4.0
+    assert s["disagreement_in_hours_pct"] == 19.0
