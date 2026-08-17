@@ -23,11 +23,14 @@ what that silence costs.
   ~0.68 eV" for liquid aluminum electrolytic capacitors — **within 4% of the derived value**.
   That 4% gap in `Ea` becomes a **19% gap in predicted hours**, which is the cheapest available
   proof that `Ea` is not a secondary detail.
-- **The rule is right by coincidence, not by construction.** Measured against the activation
-  energies actually published for this component family (0.57–1.03 eV), the rule ranges from
-  **2.40× optimistic to 0.13× conservative** — the published range does not bracket the rule, it
-  *crosses* it. The rule carries no mechanism information, so it cannot tell you which row you
-  are on.
+- **The rule is right by coincidence, not by construction.** The only published `Ea` for the
+  rule's exact target (liquid aluminum electrolytic) confirms it within 4%. But the rule carries
+  no mechanism information, so nothing stops it being applied — as marketing shortcuts often are
+  — to a neighbouring technology: across aluminum-polymer and tantalum-polymer capacitors, `Ea`
+  measured in the same study ranges 0.57–1.03 eV, and carrying the rule there swings the error
+  from **2.40× optimistic to 0.13× conservative**. See [§5](#5-checked-against-published-activation-energies--a-scope-correction)
+  for exactly which value belongs to which technology — an earlier version of this repository
+  blurred that distinction, and the correction is documented, not hidden.
 - **Three competing manufacturers (Rubycon, Nichicon, Nippon Chemi-Con) independently confirm**
   the rule holds only in a bounded temperature window — see [`references.md`](references.md).
 - Fully reproducible: standard-library-only `verify.py`, 14 automated tests, every citation
@@ -164,25 +167,46 @@ applicability limit sits at the edge of a routine extrapolation, not far past it
 repository adds is *how much* the deviation costs (§1–§3), which none of the three quantify.
 Full citations and quotes-in-context in [`references.md`](references.md).
 
-## 5. Checked against published activation energies
+## 5. Checked against published activation energies — and a scope correction
 
-§3's table sweeps round numbers. This section uses only activation energies taken from a source
-read in full context: Teverovsky, A. (NASA GSFC / Jacobs Technology), **"Stress Testing of Chip
-Aluminum Polymer Capacitors"**, PCNS proceedings. Same span as §3 (105 °C → 40 °C):
+§3's table sweeps round numbers. This section checks the derivation against activation energies
+taken from a source read in full context: Teverovsky, A. (NASA GSFC / Jacobs Technology),
+**"Stress Testing of Chip Aluminum Polymer Capacitors"**, PCNS proceedings.
 
-| Ea (eV) | rule ÷ real | direction | where the number comes from |
+**An earlier version of this section presented six values from that paper as if they were six
+estimates of the same quantity — the uncertainty in `Ea` for the rule's own target component
+(liquid aluminum electrolytic capacitors).** That was wrong, and it was the same failure mode as
+the earlier unsourced claim in §Flagged, wearing a different disguise: this time the citation was
+real, but its *scope* was not checked before the numbers went into a table together. Only one of
+the six values is actually about the component this repository's rule targets. The other five are
+about **neighbouring capacitor technologies** — corrected below.
+
+| Ea (eV) | rule ÷ real | technology | source |
 |---|---|---|---|
-| 0.57 | **2.40×** | optimistic | lower bound, measured ESR failures (that study) |
-| 0.62 | 1.74× | optimistic | polymer tantalum, average cited in that study |
-| 0.68 | **1.19×** | optimistic | the rule's own equivalence, as stated by NASA |
-| 0.73 | 0.87× | conservative | aluminum polymer, average **measured** in that study |
-| 0.94 | 0.23× | conservative | CDE's published `Ea` in their APC life equation |
-| 1.03 | 0.13× | conservative | upper bound, measured ESR failures (that study) |
+| 0.68 | **1.19×** | **liquid aluminum electrolytic** — the rule's own target | the rule's stated equivalence, per NASA |
+| 0.57 | 2.40× | aluminum *polymer* (solid, no liquid electrolyte) | lower bound, measured ESR failures (that study) |
+| 0.62 | 1.74× | tantalum *polymer* — a different base metal and electrolyte entirely | average cited in that study, ref. [17] |
+| 0.73 | 0.87× | aluminum *polymer* | average measured in that study |
+| 0.94 | 0.23× | aluminum *polymer* | CDE's published `Ea` in their own life equation |
+| 1.03 | 0.13× | aluminum *polymer* | upper bound, measured ESR failures (that study) |
 
-**Across published values the rule ranges from 2.40× optimistic to 0.13× conservative — and it
-carries no information that would tell you which row you are on.** Note that the published range
-does not bracket the rule; it *crosses* it, changing sign in the middle. That is the practical
-finding: the error is not a bounded uncertainty, it is a sign-changing one.
+**Only the first row shares the rule's exact target component.** It gives a single, well-anchored
+check: `Ea` = 0.68 eV against the 0.707 eV derived here, a 1.19× error — see the exact-match
+discussion below. The other five rows measure aluminum-polymer and tantalum-polymer capacitors,
+which do not carry liquid electrolyte and do not degrade by the mechanism (electrolyte
+evaporation through the seal) this rule was written for. Reporting them next to the liquid-type
+value as if they resolved the same uncertainty would be equivocation — the same word, "capacitor,"
+covering two different populations in the same argument.
+
+**What the five neighbouring values still show, correctly scoped:** even within one broad
+engineering family — electrolytic-style capacitors built around aluminum or tantalum — the
+activation energy is not a fixed property of "the capacitor." It swings from 0.57 to 1.03 eV
+across technologies that a designer could plausibly confuse under the same rule of thumb. If
+someone carries the 10-degree rule across that boundary — treating a polymer part's life like a
+liquid electrolytic's, which is an easy mistake since both ship in the same case outlines and
+both are marketed with the same doubling shortcut — the error swings from 2.40× optimistic to
+0.13× conservative. **That is a real finding. It is a finding about transferring the rule across
+component families, not about the uncertainty of one family's own mechanism.**
 
 ### The rule's stated equivalence, and what it costs
 
@@ -210,13 +234,14 @@ disagreement in predicted hours ... 19.0%
 an exponent. Anyone who treats the activation energy as a secondary detail is discarding 19% of
 the result on a rounding difference.
 
-**The honest conclusion.** For liquid aluminum electrolytic capacitors over this span, the rule's
-hidden `Ea` lands in the right neighbourhood — near the conventionally quoted ~0.68 eV, and inside
-the 0.57–1.03 eV band actually measured for related parts. The rule works here. But it works
-without carrying any mechanism information, so it cannot signal when it stops working: at a
-different span (§2), a different window (§1), or a different component whose dominant mechanism
-sits elsewhere in that band, the same rule produces the errors above with exactly the same
-confidence.
+**The honest conclusion, correctly scoped.** For liquid aluminum electrolytic capacitors over
+this span, the rule's hidden `Ea` lands close to the one value actually published for that exact
+component (~0.68 eV against 0.707 eV derived) — a 4% gap in `Ea`, 19% in predicted hours. The
+rule works here. But it works without carrying any mechanism information, so it cannot signal
+when it stops working: at a different span (§2), a different window (§1), or a different
+*technology* whose dominant mechanism sits elsewhere in the 0.57–1.03 eV band measured for
+neighbouring capacitor families (§5 above), the same rule produces the errors shown with exactly
+the same confidence — and nothing about the rule's formula would tell you which case you are in.
 
 > A rule that is right for reasons it cannot state is a rule you cannot audit. That is the
 > finding — not that the number is wrong.

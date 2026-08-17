@@ -43,20 +43,21 @@ def main() -> None:
     ax2.fill_between(eas2, ratios, 1.0, where=[r <= 1.0 for r in ratios],
                       color="#2980b9", alpha=0.12, label="rule conservative")
 
-    # The band of Ea values actually PUBLISHED for this component family
-    # (Teverovsky/NASA: 0.57-1.03 eV measured). It does not bracket the rule --
-    # it crosses it, so the error changes sign inside the published range.
+    # The band of Ea values published for NEIGHBOURING technologies (aluminum-
+    # and tantalum-POLYMER capacitors, Teverovsky/NASA: 0.57-1.03 eV measured).
+    # Not the rule's own target -- see README SS5 for why this distinction matters.
     ax2.axvspan(0.57, 1.03, color="#8e44ad", alpha=0.07, zorder=0)
     ax2.annotate("", xy=(0.57, 4.7), xytext=(1.03, 4.7),
                  arrowprops=dict(arrowstyle="<->", color="#8e44ad", lw=1.3))
-    ax2.text(0.80, 4.78, "published Ea range for this family (0.57–1.03 eV)",
+    ax2.text(0.80, 4.78, "published Ea, NEIGHBOURING technologies (Al/Ta polymer)",
              ha="center", fontsize=8.5, color="#8e44ad")
 
     # The two anchor points, kept visually distinct: one is the rule talking to
-    # itself (tautological), the other is an independent statement.
+    # itself (tautological), the other is the ONE value for the rule's actual
+    # target component (liquid aluminum electrolytic) -- not just "published".
     ax2.scatter([0.707], [1.0], color="#95a5a6", zorder=5, s=32)
     ax2.scatter([0.68], [1.19], color="#c0392b", zorder=6, s=48)
-    ax2.annotate("published 0.68 eV\n→ rule 1.19× optimistic",
+    ax2.annotate("0.68 eV, SAME component\n→ rule 1.19× optimistic",
                  xy=(0.68, 1.19), xytext=(0.76, 3.35), fontsize=9, color="#c0392b",
                  arrowprops=dict(arrowstyle="->", color="#c0392b"))
     ax2.annotate("derived 0.707 eV → 1.00×\n(tautological: rule vs. itself)",

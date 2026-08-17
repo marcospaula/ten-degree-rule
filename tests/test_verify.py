@@ -77,28 +77,48 @@ def test_acima_de_707_a_regra_fica_conservadora():
 
 
 # ---- os Ea PUBLICADOS (README secao 5) -- a comparacao que nao e circular ----
+# ATENCAO: so 1 das 6 linhas mede o MESMO componente da regra (eletrolitico
+# de aluminio liquido). As outras 5 sao tecnologia vizinha (polimero). Ver o
+# corolario "por que estamos misturando populacoes" em auditar-como-fellow.
 
-def test_contra_o_ea_publicado_a_regra_e_19pct_otimista():
-    """Contra o 0.68 eV que a NASA enuncia, a regra NAO coincide: erra 1.19x."""
-    linha = next(r for r in check_published_ea() if r["ea_ev"] == 0.68)
+def test_so_uma_linha_e_o_alvo_real_da_regra():
+    """A distincao de tecnologia e o achado desta rodada de auditoria: nao e
+    '6 estimativas da mesma incerteza', e 1 ponto confirmado + 5 de outra
+    tecnologia. Nenhuma funcao pode apagar essa distincao."""
+    tabela = check_published_ea()
+    alvo = [r for r in tabela if r["is_rule_target"]]
+    assert len(alvo) == 1
+    assert alvo[0]["ea_ev"] == 0.68
+    assert alvo[0]["technology"] == "liquid aluminum electrolytic"
+
+
+def test_contra_o_unico_ea_do_mesmo_componente_a_regra_e_19pct_otimista():
+    """Contra o 0.68 eV que a NASA enuncia PARA O MESMO COMPONENTE da regra,
+    ela nao coincide: erra 1.19x. Esta e a comparacao que sustenta o post."""
+    linha = next(r for r in check_published_ea() if r["is_rule_target"])
     assert linha["rule_over_real"] == 1.19
     assert linha["direction"] == "optimistic"
 
 
-def test_a_faixa_publicada_atravessa_a_neutralidade():
-    """O achado: os Ea publicados nao cercam a regra, eles a atravessam --
-    de 2.4x otimista a 0.13x conservadora, com inversao de sinal no meio."""
-    tabela = check_published_ea()
-    razoes = [r["rule_over_real"] for r in tabela]
+def test_tecnologia_vizinha_atravessa_a_neutralidade():
+    """O achado sobre TRANSFERIR a regra entre tecnologias (nao sobre a
+    incerteza intrinseca do proprio alvo): entre alumino/tantalo polimero,
+    o erro vai de 2.4x otimista a 0.13x conservadora."""
+    vizinhas = [r for r in check_published_ea() if not r["is_rule_target"]]
+    assert len(vizinhas) == 5
+    razoes = [r["rule_over_real"] for r in vizinhas]
     assert max(razoes) == 2.40
     assert min(razoes) == 0.13
     assert any(r > 1 for r in razoes) and any(r < 1 for r in razoes), \
         "a faixa tem que cruzar 1.0, senao o argumento da direcao cai"
 
 
-def test_toda_linha_publicada_tem_fonte():
-    """Nenhum Ea entra na tabela sem procedencia declarada."""
-    assert all(r["source"].strip() for r in check_published_ea())
+def test_toda_linha_publicada_tem_fonte_e_tecnologia():
+    """Nenhum Ea entra na tabela sem procedencia declarada E sem tecnologia
+    explicita -- e a tecnologia que faltava antes desta correcao."""
+    tabela = check_published_ea()
+    assert all(r["source"].strip() for r in tabela)
+    assert all(r["technology"].strip() for r in tabela)
 
 
 def test_4pct_em_ea_vira_19pct_em_horas():

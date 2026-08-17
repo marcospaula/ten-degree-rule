@@ -120,26 +120,47 @@ derives `Ea` = 0.707 eV as the value the rule embeds over the 105 °C → 40 °C
 states ~0.68 eV for the same rule and the same component class — a 4% difference,
 arrived at independently.
 
+**Consequence for the derivation:** for liquid aluminum electrolytic capacitors — the
+rule's own target — over this particular span, the rule's hidden `Ea` lands close to the
+one value actually published for that exact component: a 4% gap in `Ea`, 19% in
+predicted hours (see the arithmetic in README §5). The rule is right here, but by
+coincidence rather than by construction, since it carries no mechanism information that
+would tell a user when the coincidence stops holding.
+
+### ⚠️ Correction (2026-08-17): five of six published values are a different technology
+
 The same study's own accelerated-life measurements (high-temperature storage at 100,
-125 and 150 °C on seven types of aluminum polymer capacitors, a neighbouring technology)
-found, §III:
+125 and 150 °C on seven types of **aluminum polymer** capacitors — solid conductive
+cathode, no liquid electrolyte, a different dominant aging mechanism) found, §III:
 
 > "Activation energies of the degradation varied from 0.64 to 0.9 eV for capacitance and
 > in somewhat wider range, from 0.57 to 1.03 eV for ESR failures. However, the average
 > activation energies were practically the same, Ea_C = 0.73 ± 0.1 eV, and
 > Ea_ESR = 0.73 ± 0.16 eV."
 
-Both bracket the derived 0.707 eV. **Consequence for this repository's framing:** for
-liquid aluminum electrolytic capacitors over this particular span, the rule's hidden
-`Ea` lands close to the conventionally accepted one — the rule is right here, but by
-coincidence rather than by construction, since it carries no mechanism information that
-would tell a user when the coincidence stops holding.
+CDE's own published life equation for aluminum polymer capacitors gives `Ea` = 0.94 eV
+(cited in that study, ref. [2]); a polymer-tantalum average of 0.62 eV is also cited
+(ref. [17]).
 
-⚠️ **Read the scope carefully.** The 0.68 eV quote is about the *rule's assumed
-equivalence for liquid aluminum electrolytic capacitors*; the 0.73 eV measurements are
-on *aluminum polymer* capacitors (a different construction, no liquid electrolyte). They
-are consistent with each other and with the derivation, but they are not the same claim,
-and this repository does not merge them.
+**An earlier version of this repository's README and the LinkedIn post built from it
+presented all six values — 0.57, 0.62, 0.68, 0.73, 0.94, 1.03 eV — as if they were six
+estimates of the same uncertainty, "the published Ea for this component family."** That
+was caught by the user asking directly: *"why are we mixing populations?"* The honest
+answer is that only **0.68 eV is measured on the rule's actual target** (liquid
+aluminum electrolytic). The other five — 0.57, 0.62, 0.73, 0.94, 1.03 — are aluminum-
+or tantalum-**polymer** capacitors, a neighbouring but distinct technology. Presenting
+them next to the 0.68 eV value under one label was equivocation: the word "capacitor"
+covering two different populations in the same table.
+
+**What survives the correction, correctly scoped:** the single liquid-electrolytic data
+point still confirms the derivation (§5 above). The five polymer values still support a
+narrower, different claim — that `Ea` is not a fixed property even across
+closely-related capacitor technologies, so carrying the rule from one technology to
+another (a plausible mistake, since both are marketed with the same doubling shortcut)
+produces errors from 2.40× optimistic to 0.13× conservative. That is a claim about
+**transferring the rule across technologies**, not about the intrinsic uncertainty of
+the rule's own target mechanism. See README §5 for the corrected table, with every row
+tagged by technology.
 
 ## 5. Checked, no usable data
 

@@ -106,14 +106,24 @@ def check_bias(l_rated: float = 5000.0, t_rated_c: float = 105.0, t_use_c: float
 # --------------------------------------------------- the published Ea values
 # Every value below was read in full context from Teverovsky, A., "Stress
 # Testing of Chip Aluminum Polymer Capacitors" (NASA GSFC / Jacobs, PCNS).
-# Nothing here comes from a search-engine summary. See references.md §4.
+# Nothing here comes from a search-engine summary. See references.md SS4-5.
+#
+# TECHNOLOGY MATTERS. Only ONE of these six values (0.68 eV) is measured on
+# the rule's actual target component -- liquid aluminum electrolytic
+# capacitors. The other five are aluminum-POLYMER or tantalum-POLYMER parts:
+# solid conductive cathode, no liquid electrolyte, a different dominant aging
+# mechanism. An earlier version of this file listed all six as if they were
+# six estimates of the same quantity -- that was equivocation, caught after
+# the user asked "why are we mixing populations?". Corrected here: each row
+# now carries its technology explicitly, and no function may report a value
+# without it.
 PUBLISHED_EA = [
-    (0.57, "lower bound, measured ESR failures (this study)"),
-    (0.62, "polymer tantalum, average cited [ref 17]"),
-    (0.68, "the rule's own equivalence, as stated by NASA"),
-    (0.73, "aluminum polymer, average MEASURED in this study"),
-    (0.94, "CDE published Ea in their APC life equation"),
-    (1.03, "upper bound, measured ESR failures (this study)"),
+    (0.68, "liquid aluminum electrolytic", "the rule's own target: NASA's stated equivalence"),
+    (0.57, "aluminum polymer", "lower bound, measured ESR failures (this study)"),
+    (0.62, "tantalum polymer", "average cited in this study [ref 17]"),
+    (0.73, "aluminum polymer", "average MEASURED in this study"),
+    (0.94, "aluminum polymer", "CDE published Ea in their own APC life equation"),
+    (1.03, "aluminum polymer", "upper bound, measured ESR failures (this study)"),
 ]
 
 
@@ -122,18 +132,21 @@ def check_published_ea(t_rated_c: float = 105.0, t_use_c: float = 40.0) -> list[
 
     This is the honest version of `check_bias`: instead of sweeping arbitrary
     round numbers, it uses only activation energies that appear in a source
-    that was read in full. The spread of the published values is itself the
-    finding -- the rule cannot know which of them applies to the part in hand.
+    that was read in full -- tagged with the actual component technology,
+    because the technology, not just the number, decides whether a row is
+    evidence about the rule's own target or about a neighbouring one.
     """
-    l_rule = l_rated_af = ten_degree_rule_af(t_rated_c, t_use_c)
+    l_rule = ten_degree_rule_af(t_rated_c, t_use_c)
     rows = []
-    for ea, source in PUBLISHED_EA:
+    for ea, technology, source in PUBLISHED_EA:
         af_arr = math.exp((ea / K_BOLTZMANN_EV)
                           * (1.0 / celsius_to_kelvin(t_use_c)
                              - 1.0 / celsius_to_kelvin(t_rated_c)))
         ratio = l_rule / af_arr
         rows.append({
             "ea_ev": ea,
+            "technology": technology,
+            "is_rule_target": technology == "liquid aluminum electrolytic",
             "rule_over_real": round(ratio, 2),
             "direction": "optimistic" if ratio > 1 else "conservative",
             "source": source,
@@ -198,9 +211,16 @@ def main() -> None:
 
     pub = check_published_ea()
     _print_table("The rule vs. PUBLISHED Ea values (105 C -> 40 C) -- all read in full context", pub)
-    rr = [r["rule_over_real"] for r in pub]
-    print(f"\n  across published values the rule ranges {min(rr):.2f}x to {max(rr):.2f}x")
-    print("  -- and carries no information that would tell you which row you are on.")
+    target = [r for r in pub if r["is_rule_target"]]
+    neighbours = [r for r in pub if not r["is_rule_target"]]
+    print(f"\n  ONLY {len(target)} row matches the rule's own target component "
+          f"(liquid aluminum electrolytic): {target[0]['rule_over_real']:.2f}x")
+    nn = [r["rule_over_real"] for r in neighbours]
+    print(f"  The other {len(neighbours)} rows are NEIGHBOURING technologies (aluminum/tantalum")
+    print(f"  polymer) -- carrying the rule across that boundary swings the error from "
+          f"{min(nn):.2f}x to {max(nn):.2f}x.")
+    print("  Do not read this as six estimates of one uncertainty. It is one confirmed")
+    print("  point plus a caution about applying the rule outside its own technology.")
 
     sens = check_ea_sensitivity()
     print("\n=== Why Ea is not a detail ===")

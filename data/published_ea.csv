@@ -1,7 +1,7 @@
-ea_ev,rule_over_real,direction,source
-0.57,2.4,optimistic,"lower bound, measured ESR failures (this study)"
-0.62,1.74,optimistic,"polymer tantalum, average cited [ref 17]"
-0.68,1.19,optimistic,"the rule's own equivalence, as stated by NASA"
-0.73,0.87,conservative,"aluminum polymer, average MEASURED in this study"
-0.94,0.23,conservative,CDE published Ea in their APC life equation
-1.03,0.13,conservative,"upper bound, measured ESR failures (this study)"
+ea_ev,technology,is_rule_target,rule_over_real,direction,source
+0.68,liquid aluminum electrolytic,True,1.19,optimistic,the rule's own target: NASA's stated equivalence
+0.57,aluminum polymer,False,2.4,optimistic,"lower bound, measured ESR failures (this study)"
+0.62,tantalum polymer,False,1.74,optimistic,average cited in this study [ref 17]
+0.73,aluminum polymer,False,0.87,conservative,average MEASURED in this study
+0.94,aluminum polymer,False,0.23,conservative,CDE published Ea in their own APC life equation
+1.03,aluminum polymer,False,0.13,conservative,"upper bound, measured ESR failures (this study)"
