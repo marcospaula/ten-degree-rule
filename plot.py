@@ -42,17 +42,22 @@ def main() -> None:
                       color="#c0392b", alpha=0.15, label="rule optimistic")
     ax2.fill_between(eas2, ratios, 1.0, where=[r <= 1.0 for r in ratios],
                       color="#2980b9", alpha=0.12, label="rule conservative")
-    ax2.scatter([0.707], [1.0], color="#c0392b", zorder=5)
-    ax2.annotate("rule matches\nonly here (0.707 eV)", xy=(0.707, 1.0),
-                 xytext=(0.78, 2.3), fontsize=9, color="#c0392b",
-                 arrowprops=dict(arrowstyle="->", color="#c0392b"))
+
+    # NASA/Teverovsky states the rule corresponds to ~0.68 eV for this component
+    # class -- 4% from the 0.707 derived here. Band shows the two together.
+    ax2.axvspan(0.68, 0.707, color="#27ae60", alpha=0.18, zorder=0)
+    ax2.scatter([0.707], [1.0], color="#2c3e50", zorder=5)
+    ax2.annotate("derived 0.707 eV\npublished ~0.68 eV (NASA)", xy=(0.70, 1.0),
+                 xytext=(0.76, 2.6), fontsize=9, color="#1e6f3d",
+                 arrowprops=dict(arrowstyle="->", color="#1e6f3d"))
     ax2.set_xlabel("real activation energy Ea (eV)")
     ax2.set_ylabel("rule ÷ Arrhenius life prediction")
-    ax2.set_title("105 °C → 40 °C: bias vs. the real mechanism")
+    ax2.set_title("105 °C → 40 °C: error vs. the unstated mechanism")
     ax2.legend(fontsize=8, loc="upper right")
 
-    fig.suptitle("The ten-degree rule embeds an undeclared, moving Arrhenius Ea",
-                  fontsize=12, y=1.03)
+    fig.suptitle("The ten-degree rule embeds an undeclared, moving Arrhenius Ea\n"
+                 "right by coincidence at one point, unbounded elsewhere",
+                 fontsize=12, y=1.10, linespacing=1.6)
     fig.tight_layout()
     fig.savefig(FIG_PATH, dpi=150, bbox_inches="tight")
     print(f"Wrote {FIG_PATH}")
