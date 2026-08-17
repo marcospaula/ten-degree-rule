@@ -106,3 +106,35 @@ def test_4pct_em_ea_vira_19pct_em_horas():
     s = check_ea_sensitivity()
     assert s["disagreement_in_ea_pct"] == 4.0
     assert s["disagreement_in_hours_pct"] == 19.0
+
+
+# ---- KELVIN: o erro classico de Arrhenius, travado por teste ----
+
+def test_arrhenius_usa_kelvin_e_nao_celsius():
+    """O erro mais comum em Arrhenius e passar Celsius onde vai Kelvin.
+
+    Conferencia a mao (105 -> 40 C):
+        1/313,15 - 1/378,15 = 5,4890e-4  1/K
+        Ea = k * ln(2^6,5) / 5,4890e-4   = 0,7073 eV
+    Se alguem remover a conversao, 1/40 - 1/105 = 1,5476e-2 e o Ea despenca
+    para 0,025 eV -- 28x menor, e fora de qualquer faixa fisica real.
+    """
+    ea = ten_degree_rule_implied_ea(t_rated_c=105.0, t_use_c=40.0)
+    assert round(ea, 4) == 0.7073, "o valor mudou: a conversao para Kelvin caiu?"
+    assert ea > 0.1, "Ea abaixo de 0,1 eV = quase certamente Celsius passado como Kelvin"
+
+
+def test_ea_implicito_cai_na_faixa_fisicamente_plausivel():
+    """Guarda de sanidade fisica, nao de aritmetica: mecanismo de falha real
+    fica entre ~0,3 e ~1,5 eV. Fora disso, o erro e de unidade, nao de modelo."""
+    for t_hot in range(135, 25, -10):
+        ea = implied_ea(t_hot, t_hot - 10, af=2.0)
+        assert 0.3 < ea < 1.5, f"janela {t_hot}->{t_hot-10} deu Ea={ea:.4f} eV, implausivel"
+
+
+def test_a_regra_em_si_usa_DIFERENCA_de_temperatura():
+    """A regra pode usar Celsius, e esta certo: diferenca de temperatura e
+    identica nas duas escalas, porque o offset de 273,15 cancela."""
+    af_celsius = ten_degree_rule_af(t_rated_c=105.0, t_use_c=40.0)
+    af_kelvin_equivalente = 2.0 ** (((105 + 273.15) - (40 + 273.15)) / 10.0)
+    assert af_celsius == pytest.approx(af_kelvin_equivalente)
